@@ -8,16 +8,17 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --win nsis portable --x64",
+    "build": "electron-builder --win nsis portable --x64 --publish never",
     "dist": "npm run build"
   },
   "devDependencies": {
-    "electron": "^31.7.7",
-    "electron-builder": "^25.1.8"
+    "electron": "31.7.7",
+    "electron-builder": "25.1.8"
   },
   "build": {
     "appId": "com.nhieuloc.appkho",
     "productName": "App Kho Nhieu Loc",
+    "electronVersion": "31.7.7",
     "asar": false,
     "files": [
       "main.js",
