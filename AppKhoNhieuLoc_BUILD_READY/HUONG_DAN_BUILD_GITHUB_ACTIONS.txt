@@ -1,0 +1,75 @@
+HUONG DAN TAO FILE CAI DAT EXE BANG GITHUB ACTIONS
+=======================================================
+
+Muc tieu:
+- Khong can build tren may cua ban.
+- GitHub se dung may Windows de tao file cai dat .exe.
+- Sau khi build xong, tai file .exe ve va cai tren may khac.
+
+CAC BUOC LAM
+============
+
+B1. Tao tai khoan GitHub
+------------------------
+Vao github.com va dang nhap/tao tai khoan.
+
+B2. Tao repository moi
+----------------------
+1. Bam nut New repository.
+2. Dat ten vi du: AppKhoNhieuLoc
+3. Chon Private hoac Public deu duoc.
+4. Bam Create repository.
+
+B3. Upload source app
+---------------------
+1. Giai nen file AppKhoNhieuLoc_GITHUB_BUILD.zip.
+2. Mo thu muc AppKhoNhieuLoc_BUILD_READY ben trong.
+3. Upload TOAN BO file va thu muc trong do len repository GitHub.
+
+Can co cac file/thumuc nay:
+- main.js
+- preload.js
+- package.json
+- LenhKho_Template.xlsx
+- PhieuXuat_Template.xlsx
+- Bill_Template.xlsm
+- ChuyenKho_Template.xlsx
+- .github/workflows/build-windows.yml
+
+Luu y:
+- KHONG upload node_modules.
+- KHONG upload dist.
+- Neu GitHub khong hien thu muc .github khi keo tha, co the dung nut "upload files" va keo ca thu muc goc.
+
+B4. Chay build
+--------------
+1. Vao tab Actions trong repository.
+2. Chon workflow: Build Windows EXE.
+3. Bam Run workflow.
+4. Cho GitHub build xong, thuong 5-15 phut.
+
+B5. Tai file EXE
+----------------
+1. Khi workflow hien dau xanh, bam vao lan chay do.
+2. Keo xuong muc Artifacts.
+3. Tai file: AppKhoNhieuLoc-Windows-EXE.
+4. Giai nen artifact se co:
+   - AppKhoNhieuLoc-Setup-1.0.0.exe
+   - AppKhoNhieuLoc-Portable-1.0.0.exe
+
+Dung file nao?
+--------------
+- Setup.exe: de cai len may tinh khac.
+- Portable.exe: chay truc tiep, khong can cai.
+
+LUU Y MAY TINH KHAC
+===================
+May tinh cai app van can:
+- Microsoft Excel desktop.
+- Driver may in.
+- Co Internet de app mo trang CodeSandbox/web app.
+- Neu Windows canh bao SmartScreen, bam More info > Run anyway.
+
+NEU BUILD LOI
+=============
+Mo tab Actions > bam vao dong bi do > copy doan loi cuoi cung gui ChatGPT.

@@ -1,0 +1,64 @@
+{
+  "name": "app-kho-nhieu-loc",
+  "version": "1.0.0",
+  "description": "App Kho Nhiêu Lộc - vỏ Electron in ngầm Excel",
+  "main": "main.js",
+  "author": "Nhiêu Lộc",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win nsis portable --x64",
+    "build-portable": "electron-builder --win portable --x64",
+    "dist": "npm run build"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.nhieuloc.appkho",
+    "productName": "App Kho Nhieu Loc",
+    "asar": false,
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json",
+      "LenhKho_Template.xlsx",
+      "PhieuXuat_Template.xlsx",
+      "Bill_Template.xlsm",
+      "ChuyenKho_Template.xlsx"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "App Kho Nhieu Loc",
+      "artifactName": "AppKhoNhieuLoc-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "AppKhoNhieuLoc-Portable-${version}.${ext}"
+    }
+  }
+}
