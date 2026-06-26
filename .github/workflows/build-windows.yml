@@ -49,7 +49,7 @@ jobs:
             }
           }
 
-      - name: Cai thu vien Electron Builder
+      - name: Cai thu vien dung phien ban co dinh
         shell: cmd
         working-directory: ${{ steps.appdir.outputs.dir }}
         env:
@@ -61,7 +61,9 @@ jobs:
           npm config set audit false
           call npm install --foreground-scripts --force
           call npm install electron@31.7.7 electron-builder@25.1.8 --save-dev --foreground-scripts --force
-          call npx electron-builder --version
+          call node -e "const p=require('./package.json'); console.log('electron=',p.devDependencies.electron,' electronVersion=',p.build.electronVersion)"
+          call .\node_modules\.bin\electron.cmd -v
+          call .\node_modules\.bin\electron-builder.cmd --version
 
       - name: Build file cai dat EXE
         shell: cmd
@@ -71,7 +73,7 @@ jobs:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           npm_config_electron_mirror: https://npmmirror.com/mirrors/electron/
         run: |
-          call npx electron-builder --win nsis portable --x64
+          call .\node_modules\.bin\electron-builder.cmd --win nsis portable --x64 --publish never
 
       - name: Luu file cai dat de tai ve
         uses: actions/upload-artifact@v4
