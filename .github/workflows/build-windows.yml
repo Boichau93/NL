@@ -11,6 +11,10 @@ jobs:
   build-windows:
     runs-on: windows-latest
 
+    defaults:
+      run:
+        working-directory: AppKhoNhieuLoc_BUILD_READY
+
     steps:
       - name: Lay source code
         uses: actions/checkout@v4
@@ -19,12 +23,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+
+      - name: Kiem tra file app
+        shell: cmd
+        run: |
+          dir
+          if not exist package.json exit /b 1
+          if not exist main.js exit /b 1
+          if not exist preload.js exit /b 1
 
       - name: Cai thu vien
         shell: cmd
         run: |
           npm config set ignore-scripts false
+          npm config set fund false
+          npm config set audit false
           npm install --foreground-scripts
 
       - name: Build file cai dat EXE
@@ -41,6 +54,6 @@ jobs:
         with:
           name: AppKhoNhieuLoc-Windows-EXE
           path: |
-            dist/*.exe
-            dist/*.blockmap
+            AppKhoNhieuLoc_BUILD_READY/dist/*.exe
+            AppKhoNhieuLoc_BUILD_READY/dist/*.blockmap
           if-no-files-found: error
