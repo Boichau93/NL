@@ -9,7 +9,6 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder --win nsis portable --x64",
-    "build-portable": "electron-builder --win portable --x64",
     "dist": "npm run build"
   },
   "devDependencies": {
