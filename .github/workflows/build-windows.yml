@@ -1,0 +1,46 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Lay source code
+        uses: actions/checkout@v4
+
+      - name: Cai Node.js LTS 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Cai thu vien
+        shell: cmd
+        run: |
+          npm config set ignore-scripts false
+          npm install --foreground-scripts
+
+      - name: Build file cai dat EXE
+        shell: cmd
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
+          npm_config_electron_mirror: https://npmmirror.com/mirrors/electron/
+        run: |
+          npm run build
+
+      - name: Luu file cai dat de tai ve
+        uses: actions/upload-artifact@v4
+        with:
+          name: AppKhoNhieuLoc-Windows-EXE
+          path: |
+            dist/*.exe
+            dist/*.blockmap
+          if-no-files-found: error
