@@ -11,8 +11,6 @@ jobs:
   build-windows:
     runs-on: windows-latest
 
-
-
     steps:
       - name: Lay source code
         uses: actions/checkout@v4
@@ -22,24 +20,66 @@ jobs:
         with:
           node-version: 22
 
-      - name: Kiem tra file app
-        shell: cmd
+      - name: Tu dong tim thu muc app
+        id: appdir
+        shell: pwsh
         run: |
-          dir
-          if not exist package.json exit /b 1
-          if not exist main.js exit /b 1
-          if not exist preload.js exit /b 1
+          Write-Host "Dang o thu muc:"
+          Get-Location
+          Write-Host "Danh sach file root:"
+          Get-ChildItem
+
+          if (Test-Path "package.json") {
+            "dir=." >> $env:GITHUB_OUTPUT
+            Write-Host "Tim thay app o ROOT"
+          } elseif (Test-Path "AppKhoNhieuLoc_BUILD_READY/package.json") {
+            "dir=AppKhoNhieuLoc_BUILD_READY" >> $env:GITHUB_OUTPUT
+            Write-Host "Tim thay app trong AppKhoNhieuLoc_BUILD_READY"
+          } else {
+            Write-Host "KHONG TIM THAY package.json"
+            Write-Host "Can co package.json o root hoac AppKhoNhieuLoc_BUILD_READY/package.json"
+            exit 1
+          }
+
+      - name: Kiem tra file app
+        shell: pwsh
+        working-directory: ${{ steps.appdir.outputs.dir }}
+        run: |
+          Write-Host "Thu muc app:"
+          Get-Location
+          Get-ChildItem
+
+          $need = @(
+            "package.json",
+            "main.js",
+            "preload.js",
+            "LenhKho_Template.xlsx",
+            "PhieuXuat_Template.xlsx",
+            "Bill_Template.xlsm",
+            "ChuyenKho_Template.xlsx"
+          )
+
+          foreach ($f in $need) {
+            if (!(Test-Path $f)) {
+              Write-Host "THIEU FILE: $f"
+              exit 1
+            }
+          }
+
+          Write-Host "DU FILE APP"
 
       - name: Cai thu vien
         shell: cmd
+        working-directory: ${{ steps.appdir.outputs.dir }}
         run: |
           npm config set ignore-scripts false
           npm config set fund false
           npm config set audit false
-          npm install --foreground-scripts
+          npm install --foreground-scripts --force
 
       - name: Build file cai dat EXE
         shell: cmd
+        working-directory: ${{ steps.appdir.outputs.dir }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
@@ -52,6 +92,6 @@ jobs:
         with:
           name: AppKhoNhieuLoc-Windows-EXE
           path: |
-            AppKhoNhieuLoc_BUILD_READY/dist/*.exe
-            AppKhoNhieuLoc_BUILD_READY/dist/*.blockmap
+            ${{ steps.appdir.outputs.dir }}/dist/*.exe
+            ${{ steps.appdir.outputs.dir }}/dist/*.blockmap
           if-no-files-found: error
