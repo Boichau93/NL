@@ -11,9 +11,7 @@ jobs:
   build-windows:
     runs-on: windows-latest
 
-    defaults:
-      run:
-        working-directory: AppKhoNhieuLoc_BUILD_READY
+
 
     steps:
       - name: Lay source code
