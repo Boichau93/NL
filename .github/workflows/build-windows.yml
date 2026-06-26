@@ -49,7 +49,33 @@ jobs:
             }
           }
 
-      - name: Cai thu vien dung phien ban co dinh
+      - name: Sua package.json ve phien ban co dinh
+        shell: pwsh
+        working-directory: ${{ steps.appdir.outputs.dir }}
+        run: |
+          $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+
+          if (-not $pkg.devDependencies) {
+            $pkg | Add-Member -MemberType NoteProperty -Name devDependencies -Value ([pscustomobject]@{})
+          }
+          $pkg.devDependencies | Add-Member -MemberType NoteProperty -Name electron -Value "31.7.7" -Force
+          $pkg.devDependencies | Add-Member -MemberType NoteProperty -Name "electron-builder" -Value "25.1.8" -Force
+
+          if (-not $pkg.build) {
+            $pkg | Add-Member -MemberType NoteProperty -Name build -Value ([pscustomobject]@{})
+          }
+          $pkg.build | Add-Member -MemberType NoteProperty -Name electronVersion -Value "31.7.7" -Force
+          $pkg.build | Add-Member -MemberType NoteProperty -Name asar -Value $false -Force
+
+          if (-not $pkg.scripts) {
+            $pkg | Add-Member -MemberType NoteProperty -Name scripts -Value ([pscustomobject]@{})
+          }
+          $pkg.scripts | Add-Member -MemberType NoteProperty -Name build -Value "electron-builder --win nsis portable --x64 --publish never" -Force
+
+          $pkg | ConvertTo-Json -Depth 30 | Set-Content package.json -Encoding UTF8
+          Get-Content package.json
+
+      - name: Cai thu vien
         shell: cmd
         working-directory: ${{ steps.appdir.outputs.dir }}
         env:
@@ -61,9 +87,7 @@ jobs:
           npm config set audit false
           call npm install --foreground-scripts --force
           call npm install electron@31.7.7 electron-builder@25.1.8 --save-dev --foreground-scripts --force
-          call node -e "const p=require('./package.json'); console.log('electron=',p.devDependencies.electron,' electronVersion=',p.build.electronVersion)"
-          call .\node_modules\.bin\electron.cmd -v
-          call .\node_modules\.bin\electron-builder.cmd --version
+          call npm list electron electron-builder --depth=0
 
       - name: Build file cai dat EXE
         shell: cmd
@@ -73,7 +97,7 @@ jobs:
           ELECTRON_MIRROR: https://npmmirror.com/mirrors/electron/
           npm_config_electron_mirror: https://npmmirror.com/mirrors/electron/
         run: |
-          call .\node_modules\.bin\electron-builder.cmd --win nsis portable --x64 --publish never
+          call npx --yes electron-builder@25.1.8 --win nsis portable --x64 --publish never
 
       - name: Luu file cai dat de tai ve
         uses: actions/upload-artifact@v4
